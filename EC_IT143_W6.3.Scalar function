@@ -1,0 +1,88 @@
+# EC_IT1438_W6.3_BR.Function
+
+
+
+  --Q4   Find the top 5 amounts between the "credit_card_transaction_flow" table and the "Repayment" table
+
+	SELECT TOP 5 *
+	FROM  ( 
+
+	     SELECT [Transaction Amount] AS Amount
+
+         FROM [Sympsons].[dbo].[credit_card_transaction_flow]
+	   
+
+		  UNION ALL
+
+		  SELECT [Amount]
+		  FROM [Sympsons].[dbo].[Repayment]
+
+       )  AS Cordinate
+		  ORDER BY Amount DESC
+
+        ---Step 5 - Create a user-defined scalar function
+
+		  CREATE FUNCTION  dbo.GetTop5TransactionAmounts()
+
+         RETURNS TABLE
+        AS
+        RETURN
+(
+    SELECT TOP 5 [Transaction Amount] AS Amount
+    FROM dbo.credit_card_transaction_flow
+
+    UNION ALL
+
+    SELECT TOP 5 Amount
+    FROM dbo.Repayment
+
+    ORDER BY Amount DESC
+);
+---Step 6 - Compare udf results to ad hoc query results
+
+-- Step 1: Run the ad hoc query
+SELECT TOP 5  [Transaction Amount]  AS Amount 
+FROM dbo.credit_card_transaction_flow
+UNION ALL
+SELECT TOP 5 Amount
+FROM dbo.Repayment
+ORDER BY Amount DESC;
+
+  -- Step 2: Execute the user-defined scalar function
+SELECT * FROM dbo.GetTop5TransactionAmounts ();-- Step 1: Run the ad hoc query
+SELECT TOP 5 [Transaction Amount] AS Amount
+FROM dbo.credit_card_transaction_flow
+UNION ALL
+SELECT TOP 5 Amount
+FROM dbo.Repayment
+ORDER BY Amount DESC;
+
+   -- Step 2: Execute the user-defined scalar function
+SELECT * FROM dbo.GetTop5TransactionAmounts();
+
+     --Step 7 - Perform a "0 results expected" test
+     -- Perform a "0 results expected" test for finding the top 5 amounts
+
+SELECT TOP 0 [Transaction Amount] AS Amount
+FROM dbo.credit_card_transaction_flow
+UNION ALL
+SELECT TOP 0 Amount
+FROM dbo.Repayment;
+
+---Step 8- Ask the next question
+
+--Q8 Could you identify the top 5 transaction amounts between the "credit_card_transaction_flow" table and the "Repayment" table separately for each table
+
+
+-- Get the top 5  [Transaction Amount] from the credit_card_transaction_flow table
+SELECT TOP 5 'credit_card_transaction_flow' AS c_BELOHA, [Transaction Amount] AS TransactionAmount
+FROM dbo.credit_card_transaction_flow
+ORDER BY [Transaction Amount] DESC;
+
+ UNION ALL
+
+-- Get the top 5 [Transaction Amount] from the Repayment tabl from the Repayment table
+
+SELECT TOP 5 'Repayment' AS r_BELOHA, Amount AS TransactionAmount
+FROM dbo.Repayment
+ORDER BY Amount DESC;
